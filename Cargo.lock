@@ -11,6 +11,7 @@ source = "git+https://www.github.com/verdex/denest?tag=release-0.1.0#1df2a91c431
 name = "matches"
 version = "0.1.0"
 dependencies = [
+ "denest",
  "structuralize",
 ]
 
@@ -21,8 +22,8 @@ source = "git+https://www.github.com/verdex/renounce?tag=release-0.3.0#a963bf88f
 
 [[package]]
 name = "structuralize"
-version = "0.3.0"
-source = "git+https://www.github.com/verdex/structuralize?tag=release-0.3.0#3715fbf4cafa99233f59d1efcd07573c6b39fd85"
+version = "0.4.0"
+source = "git+https://www.github.com/verdex/structuralize?tag=release-0.4.0#4edfd4679c680efb2f9649a22134ad455448564d"
 dependencies = [
  "denest",
  "renounce",

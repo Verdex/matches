@@ -1,4 +1,6 @@
 
+use denest::*;
+
 use structuralize::data::*;
 
 use structuralize::pattern::*;
