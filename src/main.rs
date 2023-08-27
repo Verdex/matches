@@ -8,13 +8,21 @@ fn main() {
 
     let mut args = std::env::args().collect::<Vec<_>>();
 
-    if args.len() != 2 {
-        eprintln!("usage: matches <pattern>");
+    if args.len() < 2 {
+        eprintln!("usage: matches [-c] <pattern>");
         return;
     }
 
     let pattern = args.pop().unwrap();
     let pattern = pattern.parse::<Pattern>();
+
+    let mut display_as_column = false;
+    while args.len() != 1 {
+        let a = args.pop().unwrap();
+        if a == "-c" {
+            display_as_column = true;
+        }
+    }
 
     if pattern.is_err() {
         eprintln!("Encountered Pattern Parsing error: {}", pattern.unwrap_err());
@@ -48,8 +56,12 @@ fn main() {
 
     let results = pattern_match(&pattern, &data);
 
-    display_results_in_column(results);
+    if display_as_column {
+        display_results_in_column(results);
+    }
+    else {
 
+    }
 }
 
 fn display_results_in_column(results : Vec<MatchMap<Slot, &Data>>) {
