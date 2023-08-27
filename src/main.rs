@@ -60,8 +60,15 @@ fn main() {
         display_results_in_column(results);
     }
     else {
-
+        display_results_in_data(results);
     }
+}
+
+fn display_results_in_data(results : Vec<MatchMap<Slot, &Data>>) {
+    let o = results.iter().map(|x| 
+            format!( "result([{}])", x.iter().map(|(s, d)| format!("slot( \"{}\", {} )", s, d)).collect::<Vec<_>>().join(", ") )
+        ).collect::<Vec<_>>().join(", ");
+    println!("results([{}])", o);
 }
 
 fn display_results_in_column(results : Vec<MatchMap<Slot, &Data>>) {
