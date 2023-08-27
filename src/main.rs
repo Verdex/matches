@@ -11,22 +11,22 @@ fn main() {
     let mut args = std::env::args().collect::<Vec<_>>();
 
     if args.len() < 2 {
-        eprintln!("usage: matches [-c -r] <pattern>");
+        eprintln!("usage: matches [-row -sub] <pattern>");
         return;
     }
 
     let pattern = args.pop().unwrap();
     let pattern = pattern.parse::<Pattern>();
 
-    let mut display_as_column = false;
-    let mut recursive = false;
+    let mut display_as_row = false;
+    let mut sub = false;
     while args.len() != 1 {
         let a = args.pop().unwrap();
-        if a == "-c" {
-            display_as_column = true;
+        if a == "-row" {
+            display_as_row = true;
         }
-        else if a == "-r" {
-            recursive = true;
+        else if a == "-sub" {
+            sub = true;
         }
     }
 
@@ -60,7 +60,7 @@ fn main() {
 
     let data = data.unwrap();
 
-    let results : Vec<MatchMap<Slot, &Data>> = if recursive {
+    let results : Vec<MatchMap<Slot, &Data>> = if sub {
         let mut rs = vec![];
         for d in data.to_lax() {
             rs.push(pattern_match(&pattern, &d));
@@ -71,8 +71,8 @@ fn main() {
         pattern_match(&pattern, &data)
     };
 
-    if display_as_column {
-        display_results_in_column(results);
+    if display_as_row {
+        display_results_in_row(results);
     }
     else {
         display_results_in_data(results);
@@ -86,10 +86,10 @@ fn display_results_in_data(results : Vec<MatchMap<Slot, &Data>>) {
     println!("results([{}])", o);
 }
 
-fn display_results_in_column(results : Vec<MatchMap<Slot, &Data>>) {
+fn display_results_in_row(results : Vec<MatchMap<Slot, &Data>>) {
     for result in results {
         for (slot, value) in result {
-            print!("{}:{};", slot, value);
+            print!("{} : {} ;", slot, value);
         }
         println!("");
     }
