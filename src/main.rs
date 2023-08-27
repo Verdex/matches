@@ -1,6 +1,4 @@
 
-use std::error::Error;
-
 use structuralize::data::*;
 
 use structuralize::pattern::*;
@@ -57,7 +55,8 @@ fn main() {
 fn display_results_in_column(results : Vec<MatchMap<Slot, &Data>>) {
     for result in results {
         for (slot, value) in result {
-            print!("{}:{}", slot, value);
+            print!("{}:{};", slot, value);
         }
+        println!("");
     }
 }
