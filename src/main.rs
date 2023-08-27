@@ -11,7 +11,7 @@ fn main() {
     let mut args = std::env::args().collect::<Vec<_>>();
 
     if args.len() < 2 {
-        eprintln!("usage: matches [-c] <pattern>");
+        eprintln!("usage: matches [-c -r] <pattern>");
         return;
     }
 
@@ -19,10 +19,14 @@ fn main() {
     let pattern = pattern.parse::<Pattern>();
 
     let mut display_as_column = false;
+    let mut recursive = false;
     while args.len() != 1 {
         let a = args.pop().unwrap();
         if a == "-c" {
             display_as_column = true;
+        }
+        else if a == "-r" {
+            recursive = true;
         }
     }
 
@@ -56,7 +60,17 @@ fn main() {
 
     let data = data.unwrap();
 
-    let results = pattern_match(&pattern, &data);
+
+    let results : Vec<MatchMap<Slot, &Data>> = if recursive {
+        let mut rs = vec![];
+        for d in data.to_lax() {
+            rs.push(pattern_match(&pattern, &d));
+        }
+        rs.into_iter().flatten().collect()
+    }
+    else {
+        pattern_match(&pattern, &data)
+    };
 
     if display_as_column {
         display_results_in_column(results);
