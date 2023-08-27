@@ -60,7 +60,6 @@ fn main() {
 
     let data = data.unwrap();
 
-
     let results : Vec<MatchMap<Slot, &Data>> = if recursive {
         let mut rs = vec![];
         for d in data.to_lax() {
