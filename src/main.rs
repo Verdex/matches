@@ -89,7 +89,7 @@ fn display_results_in_data(results : Vec<MatchMap<Slot, &Data>>) {
 fn display_results_in_row(results : Vec<MatchMap<Slot, &Data>>) {
     for result in results {
         for (slot, value) in result {
-            print!("{} : {} ;", slot, value);
+            print!("{} = {} ;", slot, value);
         }
         println!("");
     }
