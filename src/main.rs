@@ -8,6 +8,8 @@ use structuralize::pattern::check::*;
 
 fn main() {
 
+    // TODO : Ignore pattern that tells -sub what sub patterns to ignore searching
+
     let mut args = std::env::args().collect::<Vec<_>>();
 
     if args.len() < 2 {
