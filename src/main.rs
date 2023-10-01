@@ -8,12 +8,10 @@ use structuralize::pattern::check::*;
 
 fn main() {
 
-    // TODO : Ignore pattern that tells -sub what sub patterns to ignore searching
-
     let mut args = std::env::args().collect::<Vec<_>>();
 
     if args.len() < 2 {
-        eprintln!("usage: matches [-row -sub] <pattern>");
+        eprintln!("usage: matches [--row --sub --cut pattern] <pattern>");
         return;
     }
 
@@ -22,13 +20,23 @@ fn main() {
 
     let mut display_as_row = false;
     let mut sub = false;
+    let mut ignore = None;
     while args.len() != 1 {
         let a = args.pop().unwrap();
-        if a == "-row" {
+        if a == "--row" {
             display_as_row = true;
         }
-        else if a == "-sub" {
+        else if a == "--sub" {
             sub = true;
+        }
+        else if a == "--cut" {
+            if let Some(p) = args.pop() {
+                ignore = Some(p.parse::<Pattern>());
+            }
+            else {
+                eprintln!("Pattern is required after --cut");
+                return;
+            }
         }
     }
 
@@ -43,6 +51,25 @@ fn main() {
         eprintln!("Encountered Invalid Pattern error: {}", pattern.unwrap_err());
         return;
     }
+
+    let ignore = if let Some(p) = ignore {
+        if p.is_err() {
+            eprintln!("Encountered Invalid Ignore Pattern error: {}", p.unwrap_err());
+            return;
+        }
+        let p = check_pattern(p.unwrap());
+        
+        if p.is_err() {
+            eprintln!("Encountered Invalid Ignore Pattern error: {}", p.unwrap_err());
+            return;
+        }
+
+        Some(p.unwrap())
+    }
+    else {
+        None
+    };
+
 
     let pattern = pattern.unwrap();
 
