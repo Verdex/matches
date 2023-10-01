@@ -62,7 +62,7 @@ fn main() {
 
     let data = data.unwrap();
 
-    let results : Vec<MatchMap<Slot, &Data>> = if sub {
+    let results : Vec<MatchMap> = if sub {
         let mut rs = vec![];
         for d in data.to_lax() {
             rs.push(pattern_match(&pattern, &d));
@@ -81,14 +81,14 @@ fn main() {
     }
 }
 
-fn display_results_in_data(results : Vec<MatchMap<Slot, &Data>>) {
+fn display_results_in_data(results : Vec<MatchMap>) {
     let o = results.iter().map(|x| 
             format!( "result([{}])", x.iter().map(|(s, d)| format!("slot( \"{}\", {} )", s, d)).collect::<Vec<_>>().join(", ") )
         ).collect::<Vec<_>>().join(", ");
     println!("results([{}])", o);
 }
 
-fn display_results_in_row(results : Vec<MatchMap<Slot, &Data>>) {
+fn display_results_in_row(results : Vec<MatchMap>) {
     for result in results {
         for (slot, value) in result {
             print!("{} = {} ;", slot, value);
