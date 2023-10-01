@@ -21,7 +21,9 @@ fn main() {
     let mut display_as_row = false;
     let mut sub = false;
     let mut ignore = None;
-    while args.len() != 1 {
+
+    args.reverse();
+    while args.len() > 1 {
         let a = args.pop().unwrap();
         if a == "--row" {
             display_as_row = true;
