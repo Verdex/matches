@@ -3,8 +3,9 @@ use denest::*;
 
 use structuralize::data::*;
 
-use structuralize::pattern::*;
+use structuralize::pattern::Pattern;
 use structuralize::pattern::check::*;
+use structuralize::pattern::lazy_matcher::*;
 
 fn main() {
 
@@ -23,7 +24,8 @@ fn main() {
     let mut ignore = None;
 
     args.reverse();
-    while args.len() > 1 {
+    args.pop(); // Get rid of exe name
+    while args.len() > 0 {
         let a = args.pop().unwrap();
         if a == "--row" {
             display_as_row = true;
@@ -91,17 +93,30 @@ fn main() {
 
     let data = data.unwrap();
 
-    let results : Vec<MatchMap> = if sub {
-        let mut rs = vec![];
-        for d in data.to_lax() {
-            rs.push(pattern_match(&pattern, &d));
+    if sub {
+        if let Some(ignore) = ignore {
+            let mut results = vec![];
+            // TODO this isn't going to work because it doesn't cut out all the sub children of ignore node
+            for d in data.to_lax().filter(|d| pattern_match(&ignore, d).next().is_none()) {
+                results.push(pattern_match(&pattern, &d));
+            }
+            display(results.into_iter().flatten(), display_as_row);
         }
-        rs.into_iter().flatten().collect()
+        else {
+            let mut results = vec![];
+            for d in data.to_lax() {
+                results.push(pattern_match(&pattern, &d));
+            }
+            display(results.into_iter().flatten(), display_as_row);
+        };
     }
     else {
-        pattern_match(&pattern, &data)
+        let results = pattern_match(&pattern, &data);
+        display(results, display_as_row);
     };
+}
 
+fn display<'a>(results : impl Iterator<Item = MatchMap<'a>>, display_as_row : bool ) {
     if display_as_row {
         display_results_in_row(results);
     }
@@ -110,14 +125,14 @@ fn main() {
     }
 }
 
-fn display_results_in_data(results : Vec<MatchMap>) {
-    let o = results.iter().map(|x| 
+fn display_results_in_data<'a>(results : impl Iterator<Item = MatchMap<'a>>) {
+    let o = results.map(|x| 
             format!( "result([{}])", x.iter().map(|(s, d)| format!("slot( \"{}\", {} )", s, d)).collect::<Vec<_>>().join(", ") )
         ).collect::<Vec<_>>().join(", ");
     println!("results([{}])", o);
 }
 
-fn display_results_in_row(results : Vec<MatchMap>) {
+fn display_results_in_row<'a>(results : impl Iterator<Item = MatchMap<'a>>) {
     for result in results {
         for (slot, value) in result {
             print!("{} = {} ;", slot, value);
