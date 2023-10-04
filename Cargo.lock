@@ -4,8 +4,8 @@ version = 3
 
 [[package]]
 name = "denest"
-version = "0.1.0"
-source = "git+https://www.github.com/verdex/denest?tag=release-0.1.0#1df2a91c4316d4f5daa785c9ab21851b72d8473b"
+version = "0.2.0"
+source = "git+https://www.github.com/verdex/denest?tag=release-0.2.0#935af4b4bd2f68bbeab6c765cc650f7aaaabc982"
 
 [[package]]
 name = "matches"
@@ -22,8 +22,8 @@ source = "git+https://www.github.com/verdex/renounce?tag=release-0.3.0#a963bf88f
 
 [[package]]
 name = "structuralize"
-version = "0.8.0"
-source = "git+https://www.github.com/verdex/structuralize?tag=release-0.8.0#9b24d52deeda31750e0f8b412987c6008f036da7"
+version = "0.9.0"
+source = "git+https://www.github.com/verdex/structuralize?tag=release-0.9.0#975ef2330e3cbf9cb3ed9c63fa1638d5f4ccf61b"
 dependencies = [
  "denest",
  "renounce",

@@ -96,8 +96,7 @@ fn main() {
     if sub {
         if let Some(ignore) = ignore {
             let mut results = vec![];
-            // TODO this isn't going to work because it doesn't cut out all the sub children of ignore node
-            for d in data.to_lax().filter(|d| pattern_match(&ignore, d).next().is_none()) {
+            for d in data.to_lax_cut(|d| pattern_match(&ignore, d).next().is_none()) {
                 results.push(pattern_match(&pattern, &d));
             }
             display(results.into_iter().flatten(), display_as_row);
