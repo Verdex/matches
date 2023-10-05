@@ -1,4 +1,6 @@
 
+mod parsing;
+
 use denest::*;
 
 use structuralize::data::*;
@@ -6,6 +8,7 @@ use structuralize::data::*;
 use structuralize::pattern::Pattern;
 use structuralize::pattern::check::*;
 use structuralize::pattern::lazy_matcher::*;
+
 
 fn main() {
 

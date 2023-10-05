@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 structuralize = { git = "https://www.github.com/verdex/structuralize", version = "0.9.0", tag = "release-0.9.0" }
+renounce = { git = "https://www.github.com/verdex/renounce", version = "0.3.0", tag = "release-0.3.0" }
 denest = { git = "https://www.github.com/verdex/denest", version = "0.2.0", tag = "release-0.2.0" }
