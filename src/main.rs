@@ -1,5 +1,4 @@
 
-mod usage;
 mod data;
 mod parsing;
 mod acquisition;
@@ -15,6 +14,8 @@ use structuralize::pattern::matcher::*;
 fn main() {
 
     let mut args = std::env::args().collect::<Vec<_>>();
+
+    // TODO new usage: matches p+
 
     if args.len() < 2 {
         eprintln!("usage: matches [--row --sub --cut pattern] <pattern>");
