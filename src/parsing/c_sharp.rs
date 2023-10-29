@@ -317,7 +317,8 @@ static KEYWORDS : [&'static str; 120] =
 mod test {
     use super::*;
 
-    use structuralize::pattern::*;
+    use structuralize::pattern::data::*;
+    use structuralize::pattern::matcher::*;
     use structuralize::pattern::check::*;
 
     #[test]
@@ -327,9 +328,9 @@ mod test {
         let output = parse_id(&mut input).unwrap();
         println!("{}", output);
 
-        let p : Pattern = "id([name(\"_SomeInput786\")])".parse().unwrap();
+        let p : Pattern<SymStr> = "id([name(\"_SomeInput786\")])".parse().unwrap();
         let p = check_pattern(p).unwrap();
-        let results = pattern_match(&p, &output);
+        let results = pattern_match(&p, &output).collect::<Vec<_>>();
 
         assert_eq!( results.len(), 1 );
     }
