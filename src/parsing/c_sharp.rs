@@ -28,15 +28,15 @@ fn parse_c_sharp(input : &mut Chars) -> Result<Vec<Data>, ParseError> {
     opt!(parse_id => o_parse_id);
     opt!(parse_block => o_parse_block);
     opt!(parse_paren => o_parse_paren);
-    pat!(o_parse_dot: char => Option<Data> = '.' => { Some(Data::Symbol("dot".into()))});
-    pat!(o_parse_colon: char => Option<Data> = ':' => { Some(Data::Symbol("colon".into()))});
+    pat!(o_parse_dot: char => Option<Data> = '.' => { Some(Data::SymStr(SymStr::Symbol("dot".into())))});
+    pat!(o_parse_colon: char => Option<Data> = ':' => { Some(Data::SymStr(SymStr::Symbol("colon".into())))});
     fn o_parse_arrow(input : &mut Chars) -> Result<Option<Data>, ParseError> {
         pat!(parse_eq: char => () = '=' => { () });
         pat!(parse_gt: char => () = '>' => { () });
         parser!(input => {
             _eq <= parse_eq;
             _gt <= parse_gt;
-            select Some(Data::Symbol("arrow".into()))
+            select Some(Data::SymStr(SymStr::Symbol("arrow".into())))
         })
     }
 
@@ -100,7 +100,7 @@ fn parse_keyword(input : &mut Chars) -> Result<Data, ParseError> {
     parser!(input => {
         word <= parse_word;
         where KEYWORDS.iter().find(|x| ***x == *word).is_some();
-        select Data::Cons { name: "keyword".into(), params: vec![Data::String(word)] }
+        select Data::Cons { name: "keyword".into(), params: vec![Data::SymStr(SymStr::String(word))] }
     })
 }
 
@@ -121,8 +121,8 @@ fn parse_generic(input : &mut Chars) -> Result<Data, ParseError> {
     fn parse_inside_generic(input : &mut Chars) -> Result<Data, ParseError> {
         opt!(parse_keyword => o_parse_keyword);
         opt!(parse_id => o_parse_id);
-        pat!(o_parse_dot: char => Option<Data> = '.' => { Some(Data::Symbol("dot".into()))});
-        pat!(o_parse_colon: char => Option<Data> = ':' => { Some(Data::Symbol("colon".into()))});
+        pat!(o_parse_dot: char => Option<Data> = '.' => { Some(Data::SymStr(SymStr::Symbol("dot".into())))});
+        pat!(o_parse_colon: char => Option<Data> = ':' => { Some(Data::SymStr(SymStr::Symbol("colon".into())))});
 
         fn ignore(input : &mut Chars) -> Result<Option<Data>, ParseError> {
             parser!(input => {
@@ -168,7 +168,7 @@ fn parse_id(input : &mut Chars) -> Result<Data, ParseError> {
         generic <= ? parse_generic;
         select {
             let mut params = vec![];
-            params.push(Data::Cons { name: "name".into(), params: vec![Data::String(word)] });
+            params.push(Data::Cons { name: "name".into(), params: vec![Data::SymStr(SymStr::String(word))] });
             if let Some(generic) = generic {
                 params.push(Data::Cons { name: "generic".into(), params: vec![generic] });
             }

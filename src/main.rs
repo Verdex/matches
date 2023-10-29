@@ -1,15 +1,15 @@
 
 mod usage;
+mod data;
 mod parsing;
 mod acquisition;
 
 use denest::*;
 
 use structuralize::data::*;
-
-use structuralize::pattern::Pattern;
+use structuralize::pattern::data::*;
 use structuralize::pattern::check::*;
-use structuralize::pattern::lazy_matcher::*;
+use structuralize::pattern::matcher::*;
 
 
 fn main() {
@@ -22,7 +22,7 @@ fn main() {
     }
 
     let pattern = args.pop().unwrap();
-    let pattern = pattern.parse::<Pattern>();
+    let pattern = pattern.parse::<Pattern<SymStr>>();
 
     let mut display_as_row = false;
     let mut sub = false;
@@ -40,7 +40,7 @@ fn main() {
         }
         else if a == "--cut" {
             if let Some(p) = args.pop() {
-                ignore = Some(p.parse::<Pattern>());
+                ignore = Some(p.parse::<Pattern<SymStr>>());
             }
             else {
                 eprintln!("Pattern is required after --cut");
@@ -102,14 +102,14 @@ fn main() {
         if let Some(ignore) = ignore {
             let mut results = vec![];
             for d in data.to_lax_cut(|d| pattern_match(&ignore, d).next().is_none()) {
-                results.push(pattern_match(&pattern, &d));
+                results.push(pattern_match(&pattern, d));
             }
             display(results.into_iter().flatten(), display_as_row);
         }
         else {
             let mut results = vec![];
             for d in data.to_lax() {
-                results.push(pattern_match(&pattern, &d));
+                results.push(pattern_match(&pattern, d));
             }
             display(results.into_iter().flatten(), display_as_row);
         };
@@ -120,7 +120,7 @@ fn main() {
     };
 }
 
-fn display<'a>(results : impl Iterator<Item = MatchMap<'a>>, display_as_row : bool ) {
+fn display<'a>(results : impl Iterator<Item = MatchMap<'a, Data>>, display_as_row : bool ) {
     if display_as_row {
         display_results_in_row(results);
     }
@@ -129,14 +129,14 @@ fn display<'a>(results : impl Iterator<Item = MatchMap<'a>>, display_as_row : bo
     }
 }
 
-fn display_results_in_data<'a>(results : impl Iterator<Item = MatchMap<'a>>) {
+fn display_results_in_data<'a>(results : impl Iterator<Item = MatchMap<'a, Data>>) {
     let o = results.map(|x| 
             format!( "result([{}])", x.iter().map(|(s, d)| format!("slot( \"{}\", {} )", s, d)).collect::<Vec<_>>().join(", ") )
         ).collect::<Vec<_>>().join(", ");
     println!("results([{}])", o);
 }
 
-fn display_results_in_row<'a>(results : impl Iterator<Item = MatchMap<'a>>) {
+fn display_results_in_row<'a>(results : impl Iterator<Item = MatchMap<'a, Data>>) {
     for result in results {
         for (slot, value) in result {
             print!("{} = {} ;", slot, value);
