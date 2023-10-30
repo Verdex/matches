@@ -28,19 +28,34 @@ fn main() {
         return;
     }
 
-    let data = acquisition::get_data_from_dir().unwrap(); // TODO error handling?
+    let patterns = patterns.unwrap();
 
-    /*for sub in data.to_lax() {
-        let results = pattern_match(&tcp, sub);
+    let data = acquisition::get_data_from_dir(); 
 
+    if data.is_err() {
+        eprintln!("encountered problem getting data: {}", data.unwrap_err());
+        return;
+    }
+
+    let data = data.unwrap();
+
+    match_patterns(&patterns[..], &data, 0);
+}
+
+fn match_patterns(ps : &[TypeChecked<SymStr>], data : &Data, indent : usize) {
+    if ps.len() == 0 {
+        return;
+    }
+    for d in data.to_lax() {
+        let results = pattern_match(&ps[0], d);
         for result in results {
-            for (x, y) in result {
-                pattern_match(&tcp, y);
-                println!("{} {}", x, y);
+            for (var, data) in result {
+                println!("{}{}={}", "  ".repeat(indent), var, data);
+                match_patterns(&ps[1..], data, indent + 1);
             }
-            println!("");
+            println!("======================");
         }
-    }*/
+    }
 }
 
 fn to_pattern(arg : &str) -> Result<TypeChecked<SymStr>, Box<dyn std::error::Error>> {
